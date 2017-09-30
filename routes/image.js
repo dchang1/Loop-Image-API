@@ -6,13 +6,14 @@ var multer = require('multer');
 var upload = multer({dest: './uploads/'});
 var fileUpload = require('express-fileupload');
 var Jimp = require('jimp');
+var formidable = require('formidable');
 
   router.post('/post', function(req, res) {
     Jimp.read(req.files.image.name, function(err, image) {
       if (err) throw err;
       image.quality(50);
       image.scaleToFit(1080, 1920)
-           .write("test2-resized.jpeg");
+           //.write("test2-resized.jpeg");
       image.getBase64(Jimp.AUTO, function(err, image){
         var newPost = new Post({
           image: image
@@ -26,6 +27,9 @@ var Jimp = require('jimp');
     res.send("file uploaded to server");
   });
 
+    router.get('/upload', function (req, res){
+        res.render('upload');
+    });
 
   router.get('/save/:id', function(req, res) { //save to disk
     Post.findById(req.params.id).exec(function(err, post) {
@@ -52,8 +56,5 @@ var Jimp = require('jimp');
       }
     })
   });
-  router.get('/upload', function(req, res) {
-    res.send("test");
-  })
 
 module.exports = router;
